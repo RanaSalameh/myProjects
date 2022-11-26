@@ -1,6 +1,6 @@
 from django.shortcuts import render,redirect
 from django.http import HttpResponse, HttpResponseNotFound
-from .models import Profile
+from .models import Profile, Dweet
 from .forms import DweetForm
 from . import forms
 
@@ -12,9 +12,15 @@ def dashboard(request):
             dweet = form.save(commit=False)
             dweet.user = request.user
             dweet.save()
-            return redirect("dwitter:dashboard")
-                      
-    return render(request, "dwitter/dashboard.html", {"form": form})
+            return redirect("dwitter:dashboard")                
+    followed_dweets = Dweet.objects.filter(
+        user__profile__in=request.user.profile.follows.all()   #in means each profile in 
+            ).order_by("-created_at")
+    context = {
+        "dweets" : followed_dweets ,
+        "form" :form,
+    }   
+    return render(request, "dwitter/dashboard.html", context= context)
 
 def profile_list(request):
     profiles = Profile.objects.exclude(user=request.user)

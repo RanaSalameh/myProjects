@@ -1,2 +1,2 @@
-# myProject
-This is My first Project
+# myProjects
+This is My Django projects Repo

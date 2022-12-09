@@ -2,9 +2,11 @@ from django.shortcuts import render,redirect
 from django.http import HttpResponse, HttpResponseNotFound
 from .models import Profile, Dweet
 from .forms import DweetForm
-from . import forms
+from django.contrib.auth.decorators import login_required
+
 
 # Create your views here.
+@login_required
 def dashboard(request):
     form = DweetForm(request.POST or None)
     if request.method == "POST":
@@ -12,7 +14,8 @@ def dashboard(request):
             dweet = form.save(commit=False)
             dweet.user = request.user
             dweet.save()
-            return redirect("dwitter:dashboard")                
+            return redirect("dwitter:dashboard") 
+                       
     followed_dweets = Dweet.objects.filter(
         user__profile__in=request.user.profile.follows.all()   #in means each profile in 
             ).order_by("-created_at")

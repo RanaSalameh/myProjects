@@ -37,6 +37,9 @@
 </div>
 <div class="column is-one-third">
     <div class="block">
+        {% if profile.id == request.user.profile.id %}
+            <a href="{% url 'password_change' %}">change password </a>
+        {% endif %}
         <a href="{% url 'dwitter:profile_list' %}">
             <button class="button is-dark is-outlined is-fullwidth">
                 All Profiles
